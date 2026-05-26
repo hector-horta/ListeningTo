@@ -1,0 +1,6 @@
+src-tauri/target
+target
+.git
+.vscode
+*.exe
+*.log
