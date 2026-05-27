@@ -59,11 +59,15 @@ cargo run --manifest-path src-tauri/Cargo.toml
 
 # Linux
 cargo run --manifest-path src-tauri/Cargo.toml
+
+# macOS (Swift)
+cd macos-swift && swift run
 ```
 
 ### 3. Build the Optimized Binary
 To build the final production release executable:
 
+#### Windows & Linux (Tauri)
 1. Install the Tauri CLI tool (if you don't have it):
    ```bash
    cargo install tauri-cli
@@ -76,6 +80,15 @@ To build the final production release executable:
 The compiled standalone executable will be located in:
 - **Windows**: `src-tauri/target/release/ListeningTo.exe`
 - **Linux**: `src-tauri/target/release/ListeningTo`
+
+#### macOS (Swift native)
+Build the release executable using Swift Package Manager:
+```bash
+cd macos-swift
+swift build -c release
+```
+The compiled standalone executable will be located in:
+- **macOS**: `macos-swift/.build/release/ListeningTo`
 
 ---
 
