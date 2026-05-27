@@ -109,3 +109,22 @@ Unlike Spotify or Apple Music, VLC on Windows does not enable its SMTC (media co
 3. Navigate to **Interface** > **Control interfaces**.
 4. Check **System Media Transport Controls** (SMTC) integration.
 5. Click **Save** and restart VLC.
+
+---
+
+## Running on Linux Startup (Autostart)
+To make `ListeningTo` run automatically in the background when you log into your Linux desktop session:
+1. Create an autostart desktop entry:
+   ```bash
+   nano ~/.config/autostart/listeningto.desktop
+   ```
+2. Paste the following configuration, ensuring you replace `/path/to/ListeningTo` with the absolute path to your compiled binary:
+   ```ini
+   [Desktop Entry]
+   Type=Application
+   Name=ListeningTo
+   Comment=Discord Rich Presence Media Bridge
+   Exec=/path/to/ListeningTo
+   Terminal=false
+   Categories=AudioVideo;Utility;
+   ```
