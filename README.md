@@ -1,35 +1,40 @@
 # ListeningTo
 
-`ListeningTo` is a lightweight, cross-platform Windows and Linux system tray application that bridges your local active music playbacks to your Discord Rich Presence. 
+`ListeningTo` is a lightweight, cross-platform Windows, Linux, and macOS system tray application that bridges your local active music playbacks to your Discord Rich Presence. 
 
 It automatically detects active native desktop media players (such as Apple Music, Spotify, VLC, MusicBee, foobar2000, Tidal, and Lollypop) while intelligently filtering out web browsers (like Chrome, Firefox, Edge, and Brave) to prevent YouTube videos or other web media from polluting your Discord status.
 
 ## Key Features
 
-- **Headless Background Process**: Runs silently in the system tray with no GUI window or taskbar bloat.
+- **Headless Background Process**: Runs silently in the system tray or menu bar with no GUI window or taskbar bloat.
 - **Universal Desktop Media Support**: Reads title, artist, album, duration, and position directly from the system.
 - **Zero Browser Spam**: Automatically ignores playback events coming from web browsers.
 - **Auto-Reconnection**: Automatically detects when Discord is opened/closed and safely resumes Rich Presence updates.
-- **Cross-Platform**: Uses Windows SMTC on Windows and MPRIS2 over D-Bus on Linux.
-- **Ultra-low Footprint**: Built natively in Rust + Tauri, consuming negligible CPU and RAM.
+- **Cross-Platform**: Uses Windows SMTC on Windows, MPRIS2 over D-Bus on Linux, and MediaRemote/ScriptingBridge on macOS.
+- **Ultra-low Footprint**: Built natively in Rust + Tauri (Windows/Linux) and Swift (macOS), consuming negligible CPU and RAM.
 
 ---
 
 ## Tech Stack
 
-- **Language**: Rust
-- **Framework**: [Tauri v2](https://tauri.app/) (configured for tray-only headless execution)
+- **Language**: Rust (Windows/Linux) & Swift (macOS)
+- **Framework**: [Tauri v2](https://tauri.app/) (configured for tray-only headless execution on Windows/Linux)
 - **Windows Backend**: Windows Runtime (WinRT) SMTC APIs (`windows` crate)
 - **Linux Backend**: MPRIS2 client protocol (`mpris` and `dbus` crates)
-- **Discord Communication**: Local IPC Rich Presence Client (`discord-rich-presence` crate)
+- **macOS Backend**: Native `MediaRemote` (universal player monitoring) and `ScriptingBridge` (fallback API)
+- **Discord Communication**: Local IPC Rich Presence Client (`discord-rich-presence` crate for Rust; direct Unix domain socket IPC for Swift)
 
 ---
 
 ## Prerequisites
 
-To compile the application from source, you need the Rust toolchain installed:
+To compile the application from source:
 
-- **All platforms**: [Rust and Cargo](https://www.rust-lang.org/tools/install)
+- **All platforms**: [Rust and Cargo](https://www.rust-lang.org/tools/install) (for Windows/Linux)
+- **macOS**: Xcode Command Line Tools (for Swift compilation):
+  ```bash
+  xcode-select --install
+  ```
 - **Linux Specific**: You need D-Bus development headers and the Ayatana AppIndicator library:
   ```bash
   # Debian / Ubuntu / Mint / Pop!_OS:
@@ -98,18 +103,19 @@ The compiled standalone executable will be located in:
 [Media Player (Spotify, VLC, Apple Music...)] 
       │ 
       ▼ (Platform Media APIs)
-  [Windows SMTC / Linux MPRIS] 
+  [Windows SMTC / Linux MPRIS / macOS MediaRemote & ScriptingBridge] 
       │ 
-      ▼ (media_reader.rs - platform conditional compilation)
+      ▼ (media_reader.rs / MusicReader.swift - platform implementations)
   [ListeningTo background loop (5s interval)]
       │ 
       ▼ (Local IPC via socket/named pipe)
 [Discord Desktop Client]
 ```
 
-### Platform Implementations (`src-tauri/src/media_reader.rs`):
-- **Windows**: Regularly calls `GlobalSystemMediaTransportControlsSessionManager` to read active media sessions. It queries session App IDs to filter out browsers, then reads the media properties and timeline.
-- **Linux**: Queries D-Bus using the `mpris` crate. It queries active MPRIS player identities, filters out browsers, and extracts song track info and current playback timeline.
+### Platform Implementations:
+- **Windows** (`src-tauri/src/media_reader.rs`): Regularly calls `GlobalSystemMediaTransportControlsSessionManager` to read active media sessions. It queries session App IDs to filter out browsers, then reads the media properties and timeline.
+- **Linux** (`src-tauri/src/media_reader.rs`): Queries D-Bus using the `mpris` crate. It queries active MPRIS player identities, filters out browsers, and extracts song track info and current playback timeline.
+- **macOS** (`macos-swift/Sources/ListeningTo/MusicReader.swift`): Dynamically loads Apple's private `MediaRemote` framework to capture track info from any system player. In case of macOS sandbox/entitlement restrictions (macOS 15.4+), it automatically falls back to `ScriptingBridge` queries for Apple Music and Spotify.
 
 ---
 
