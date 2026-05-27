@@ -42,11 +42,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem?.menu = menu
         
         print("[App] ListeningTo macOS (Swift) iniciado exitosamente.")
-        print("[App] Monitoreando Apple Music y Spotify...")
+        print("[App] Monitoreando reproductores mediante MediaRemote y ScriptingBridge...")
         
-        // Iniciar temporizador recurrente cada 5 segundos
+        // Iniciar temporizador recurrente cada 5 segundos (ejecutado de forma asíncrona mediante un Task de Swift)
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
-            self?.pollMediaState()
+            Task {
+                await self?.pollMediaState()
+            }
         }
     }
     
@@ -55,8 +57,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         discordRpc.disconnect()
     }
     
-    func pollMediaState() {
-        guard let state = musicReader.getCurrentTrack() else {
+    func pollMediaState() async {
+        guard let state = await musicReader.getCurrentTrack() else {
             if isCurrentlyActive {
                 print("[App] Nada activo en macOS. Limpiando presencia...")
                 discordRpc.clearActivity()
