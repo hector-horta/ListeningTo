@@ -47,6 +47,9 @@ To compile the application from source:
   sudo dnf install libayatana-appindicator-devel dbus-devel
   ```
 
+> [!TIP]
+> **Avoid installing development packages locally**: If you prefer not to install development headers/libraries on your host Linux system (which can sometimes cause dependency conflicts), or if you are compiling the Linux binary from Windows/macOS, you can skip installing these packages locally and jump directly to the **[Alternative: Compiling Linux Binary via Docker](#alternative-compiling-linux-binary-via-docker)** section.
+
 ---
 
 ## Getting Started
