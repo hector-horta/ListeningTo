@@ -30,7 +30,7 @@ It automatically detects active native desktop media players (such as Apple Musi
 
 To compile the application from source:
 
-- **All platforms**: [Rust and Cargo](https://www.rust-lang.org/tools/install) (for Windows/Linux)
+- **Windows & Linux**: [Rust and Cargo](https://www.rust-lang.org/tools/install)
 - **macOS**: Xcode Command Line Tools (for Swift compilation):
   ```bash
   xcode-select --install
