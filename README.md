@@ -99,6 +99,23 @@ swift build -c release
 The compiled standalone executable will be located in:
 - **macOS**: `macos-swift/.build/release/ListeningTo`
 
+#### Alternative: Compiling Linux Binary via Docker
+If you want to build the Linux version of `ListeningTo` without installing GTK, D-Bus, or Ayatana AppIndicator development packages on your host OS (which can sometimes cause dependency conflicts), or if you want to compile the Linux binary from another operating system (like Windows or macOS), you can build it inside an isolated Docker container:
+
+1. Build the compiler Docker image:
+   ```bash
+   docker build -t listeningto-builder .
+   ```
+2. Run the container to build the code and export the finished binary directly to your project root folder:
+   ```bash
+   # On Linux/macOS (Bash):
+   docker run --rm -v $(pwd):/out listeningto-builder
+
+   # On Windows (PowerShell):
+   docker run --rm -v ${PWD}:/out listeningto-builder
+   ```
+   This will generate a native `ListeningTo` Linux executable in your local project root folder.
+
 ---
 
 ## Architecture Overview
