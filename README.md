@@ -82,9 +82,13 @@ To build the final production release executable:
    cargo tauri build
    ```
 
-The compiled standalone executable will be located in:
-- **Windows**: `src-tauri/target/release/ListeningTo.exe`
-- **Linux**: `src-tauri/target/release/ListeningTo`
+The compiled binaries and installers will be located in:
+- **Windows**:
+  - Standalone executable: `src-tauri/target/release/ListeningTo.exe` (runnable directly)
+  - Installer packages: `src-tauri/target/release/bundle/nsis/` or `msi/`
+- **Linux**:
+  - Standalone binary: `src-tauri/target/release/ListeningTo`
+  - Installation packages: `src-tauri/target/release/bundle/deb/`
 
 #### macOS (Swift native)
 Build the release executable using Swift Package Manager:
