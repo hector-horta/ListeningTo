@@ -1,4 +1,4 @@
-FROM rust:1.78-slim-bookworm AS builder
+FROM rust:1.85-slim-bookworm AS builder
 
 # Instalar dependencias necesarias para compilar GTK, D-Bus y Ayatana AppIndicator
 RUN apt-get update && apt-get install -y --no-install-recommends \
