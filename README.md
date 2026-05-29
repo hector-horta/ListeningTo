@@ -94,13 +94,15 @@ The compiled binaries and installers will be located in:
   - Installation packages: `src-tauri/target/release/bundle/deb/`
 
 #### macOS (Swift native)
-Build the release executable using Swift Package Manager:
+Build the native macOS `.app` bundle (which packages the binary with the custom app icon and configures it to run strictly as a background menu bar application):
 ```bash
 cd macos-swift
-swift build -c release
+./build_app.sh
 ```
-The compiled standalone executable will be located in:
-- **macOS**: `macos-swift/.build/release/ListeningTo`
+The compiled, ready-to-run app bundle will be located in:
+- **macOS**: `macos-swift/build/ListeningTo.app`
+
+*(Note: If you only want the raw standalone command-line binary, you can run `swift build -c release` instead, which outputs to `macos-swift/.build/release/ListeningTo` without packaging assets or setting up the `.app` bundle).*
 
 #### Alternative: Compiling Linux Binary via Docker
 If you want to build the Linux version of `ListeningTo` without installing GTK, D-Bus, or Ayatana AppIndicator development packages on your host OS (which can sometimes cause dependency conflicts), or if you want to compile the Linux binary from another operating system (like Windows or macOS), you can build it inside an isolated Docker container:

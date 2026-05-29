@@ -30,3 +30,4 @@ target/
 
 # Swift/Xcode specific
 macos-swift/.build/
+macos-swift/build/
