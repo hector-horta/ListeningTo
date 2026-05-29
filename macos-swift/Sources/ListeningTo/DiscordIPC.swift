@@ -79,7 +79,8 @@ public class DiscordIPC {
         album: String,
         isPlaying: Bool,
         positionMs: Int64,
-        durationMs: Int64
+        durationMs: Int64,
+        artworkUrl: String?
     ) {
         guard connect() else { return }
         
@@ -87,7 +88,7 @@ public class DiscordIPC {
         let startTimestamp = (nowMs - positionMs) / 1000
         let endTimestamp = startTimestamp + (durationMs / 1000)
         
-        let largeImageKey = "apple_music_logo"
+        let largeImageKey = artworkUrl ?? "apple_music_logo"
         let largeImageText = album.isEmpty ? "Music" : album
         
         let activityJson = """

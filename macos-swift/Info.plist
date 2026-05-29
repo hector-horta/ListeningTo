@@ -28,5 +28,7 @@
     <true/>
     <key>NSPrincipalClass</key>
     <string>NSApplication</string>
+    <key>NSAppleEventsUsageDescription</key>
+    <string>ListeningTo necesita acceso a Apple Music y Spotify para leer la canción en reproducción y actualizar tu estado en Discord.</string>
 </dict>
 </plist>

@@ -38,7 +38,7 @@ rm -rf "$ICONSET_DIR"
 
 # 4. Compile the Swift code in release mode
 echo "--> Compiling Swift application in release mode..."
-swift build -c release
+swift build -c release -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __info_plist -Xlinker Info.plist
 
 # 5. Create app bundle structure
 BUILD_DIR="build"
@@ -56,6 +56,10 @@ cp "Info.plist" "$APP_BUNDLE/Contents/Info.plist"
 
 # Move AppIcon.icns to Resources
 mv "AppIcon.icns" "$APP_BUNDLE/Contents/Resources/AppIcon.icns"
+
+# 6. Ad-hoc sign the app bundle (vital for macOS TCC permissions and private API loading)
+echo "--> Ad-hoc signing the app bundle..."
+codesign --force --deep --sign - "$APP_BUNDLE"
 
 echo "==> Success! Built $APP_BUNDLE successfully."
 echo "You can run the app with: open $APP_BUNDLE"
