@@ -166,7 +166,7 @@ public class MusicReader {
     private func getScriptingBridgeTrack() -> TrackState? {
         print("[ScriptingBridge] Evaluando fallback...")
         
-        // 1. Fallback a Apple Music
+        // 1. Verificar Apple Music
         if let app = SBApplication(bundleIdentifier: musicBundleId) as AnyObject? {
             let isRunning = app.value(forKey: "isRunning") as? Bool ?? false
             print("[ScriptingBridge] Apple Music ejecutándose: \(isRunning)")
@@ -200,7 +200,7 @@ public class MusicReader {
             print("[ScriptingBridge] No se pudo instanciar Apple Music SBApplication.")
         }
         
-        // 2. Fallback a Spotify
+        // 2. Verificar Spotify
         if let app = SBApplication(bundleIdentifier: spotifyBundleId) as AnyObject? {
             let isRunning = app.value(forKey: "isRunning") as? Bool ?? false
             print("[ScriptingBridge] Spotify ejecutándose: \(isRunning)")
