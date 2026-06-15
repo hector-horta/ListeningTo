@@ -27,6 +27,9 @@ dist-ssr
 /src-tauri/target/
 /src-tauri/gen/schemas
 target/
+# Swift/Xcode specific
+macos-swift/.build/
+macos-swift/build/
 
 #rag specific
 .rag-v1/
