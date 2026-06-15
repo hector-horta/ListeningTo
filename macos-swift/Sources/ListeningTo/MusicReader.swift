@@ -1,6 +1,14 @@
 import Foundation
 import ScriptingBridge
 
+private let kSecondsToMillis: Double = 1000.0
+
+private extension String {
+    var trimmed: String {
+        trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
 // --- PROTOCOLOS DE SCRIPTING BRIDGE PARA COMUNICARSE CON REPRODUCTORES DE MACOS (FALLBACK) ---
 
 @objc(SBApplicationProtocol)
@@ -85,15 +93,15 @@ class MediaRemoteReader {
                 print("[MediaRemote] Callback invocado.")
                 let dict = info as? [String: Any] ?? [:]
                 
-                guard let title = dict["kMRMediaRemoteNowPlayingInfoTitle"] as? String,
-                      let artist = dict["kMRMediaRemoteNowPlayingInfoArtist"] as? String else {
-                    print("[MediaRemote] Advertencia: Título o artista nulos en el diccionario.")
+                guard let title = (dict["kMRMediaRemoteNowPlayingInfoTitle"] as? String)?.trimmed, !title.isEmpty,
+                      let artist = (dict["kMRMediaRemoteNowPlayingInfoArtist"] as? String)?.trimmed, !artist.isEmpty else {
+                    print("[MediaRemote] Advertencia: Título o artista nulos/vacíos en el diccionario.")
                     continuation.resume(returning: nil)
                     return
                 }
                 
                 print("[MediaRemote] Detectado: \(title) - \(artist)")
-                let album = dict["kMRMediaRemoteNowPlayingInfoAlbum"] as? String ?? ""
+                let album = (dict["kMRMediaRemoteNowPlayingInfoAlbum"] as? String)?.trimmed ?? ""
                 let durationSec = dict["kMRMediaRemoteNowPlayingInfoDuration"] as? Double ?? 0.0
                 let elapsedSec = dict["kMRMediaRemoteNowPlayingInfoElapsedTime"] as? Double ?? 0.0
                 let rate = dict["kMRMediaRemoteNowPlayingInfoPlaybackRate"] as? Double ?? 0.0
@@ -126,8 +134,8 @@ class MediaRemoteReader {
                     artist: artist,
                     album: album,
                     isPlaying: isPlaying,
-                    positionMs: Int64(elapsedSec * 1000.0),
-                    durationMs: Int64(durationSec * 1000.0),
+                    positionMs: Int64(elapsedSec * kSecondsToMillis),
+                    durationMs: Int64(durationSec * kSecondsToMillis),
                     artworkUrl: artworkUrl
                 ))
             }
@@ -168,9 +176,9 @@ public class MusicReader {
                 print("[ScriptingBridge] Apple Music playerState: \(stateVal) (isPlaying: \(isPlaying))")
                 
                 if let track = app.value(forKey: "currentTrack") as AnyObject? {
-                    let title = track.value(forKey: "name") as? String ?? "Unknown Track"
-                    let artist = track.value(forKey: "artist") as? String ?? "Unknown Artist"
-                    let album = track.value(forKey: "album") as? String ?? "Unknown Album"
+                    let title = (track.value(forKey: "name") as? String)?.trimmed ?? "Unknown Track"
+                    let artist = (track.value(forKey: "artist") as? String)?.trimmed ?? "Unknown Artist"
+                    let album = (track.value(forKey: "album") as? String)?.trimmed ?? "Unknown Album"
                     let durationSec = track.value(forKey: "duration") as? Double ?? 0.0
                     let positionSec = app.value(forKey: "playerPosition") as? Double ?? 0.0
                     
@@ -180,8 +188,8 @@ public class MusicReader {
                         artist: artist,
                         album: album,
                         isPlaying: isPlaying,
-                        positionMs: Int64(positionSec * 1000.0),
-                        durationMs: Int64(durationSec * 1000.0),
+                        positionMs: Int64(positionSec * kSecondsToMillis),
+                        durationMs: Int64(durationSec * kSecondsToMillis),
                         artworkUrl: nil
                     )
                 } else {
@@ -202,10 +210,11 @@ public class MusicReader {
                 print("[ScriptingBridge] Spotify playerState: \(stateVal) (isPlaying: \(isPlaying))")
                 
                 if let track = app.value(forKey: "currentTrack") as AnyObject? {
-                    let title = track.value(forKey: "name") as? String ?? "Unknown Track"
-                    let artist = track.value(forKey: "artist") as? String ?? "Unknown Artist"
-                    let album = track.value(forKey: "album") as? String ?? "Unknown Album"
+                    let title = (track.value(forKey: "name") as? String)?.trimmed ?? "Unknown Track"
+                    let artist = (track.value(forKey: "artist") as? String)?.trimmed ?? "Unknown Artist"
+                    let album = (track.value(forKey: "album") as? String)?.trimmed ?? "Unknown Album"
                     
+                    // Spotify ya devuelve duration en milisegundos, no requiere conversión
                     let durationMs: Int64
                     if let durDouble = track.value(forKey: "duration") as? Double {
                         durationMs = Int64(durDouble)
@@ -224,7 +233,7 @@ public class MusicReader {
                         artist: artist,
                         album: album,
                         isPlaying: isPlaying,
-                        positionMs: Int64(positionSec * 1000.0),
+                        positionMs: Int64(positionSec * kSecondsToMillis),
                         durationMs: durationMs,
                         artworkUrl: artworkUrl
                     )
