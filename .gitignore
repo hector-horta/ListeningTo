@@ -32,4 +32,4 @@ macos-swift/.build/
 macos-swift/build/
 
 #rag specific
-.rag-v1/
+rag-v1/
